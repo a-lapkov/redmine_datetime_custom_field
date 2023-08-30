@@ -31,13 +31,12 @@ ActionView::Base.prepend ApplicationHelper
 module ApplicationHelper
   def format_time_without_zone(time, include_date = true)
     return nil unless time
-    options = {}
-    options[:format] = (Setting.time_format.blank? ? :time : Setting.time_format)
-    options[:locale] = User.current.language unless User.current.language.blank?
+    f = (Setting.time_format.blank? ? :time : Setting.time_format)
+    locale = User.current.language unless User.current.language.blank?
     time = time.to_time if time.is_a?(String)
     # zone = User.current.time_zone
     # local = zone ? time.in_time_zone(zone) : (time.utc? ? time.localtime : time)
-    (include_date ? "#{format_date(time)} " : "") + ::I18n.l(time, options)
+    (include_date ? "#{format_date(time)} " : "") + ::I18n.l(time, :locale => locale, :format => f)
   end
 
   def calendar_for(field_id, showHours=nil)
